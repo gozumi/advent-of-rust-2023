@@ -9,7 +9,6 @@ mod days;
 fn main() {
   let args: Vec<String> = env::args().collect();
   let day = &args[1];
-  // let file_path = &args[2];
   let file_path = format!("src/days/day_{0}/data.txt", day);
 
   let lines_buffer = get_file_lines(file_path);
