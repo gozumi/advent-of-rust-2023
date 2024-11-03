@@ -7,7 +7,7 @@ pub fn execute_day_01(lines_buffer: Lines<BufReader<File>>) {
   for line in lines_buffer {
     match line {
       Ok(bar) => println!("{}", bar),
-      Err(why) => panic!("{:?}", why),
+      Err(why) => panic!("{:#?}", why),
     };
   }
 }
