@@ -1,0 +1,86 @@
+name: Advent of Rust 2023 - GitHub workflow
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-and-test:
+    name: build & test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: check out the code
+      uses: actions/checkout@v4
+
+    - name: set up the rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        target: wasm32-unknown-unknown
+        toolchain: stable,nightly
+   
+    - name: Install cargo-binstall
+      uses: cargo-bins/cargo-binstall@main
+
+    - name: Install Cargo Nextest
+      run: cargo binstall cargo-nextest --secure --force
+
+    - name: Install wasm-bindgen-cli
+      run: cargo binstall wasm-bindgen-cli --secure --force
+
+    - name: Run the unit tests
+      run: cargo nextest run --profile ci
+
+    - name: Produce test report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()    # run this step even if previous step failed
+      with:
+        name: nextest report
+        path: target/nextest/ci/*.xml
+        reporter: jest-junit  
+
+    - name: Build the Web app
+      run: |
+        cargo build --release --target wasm32-unknown-unknown
+        wasm-bindgen --target web --out-dir dist target/wasm32-unknown-unknown/release/web-app.wasm
+      
+    - name: Copy index.html to dist
+      run: cp web/index.html dist/
+
+    - name: Upload static files as artifact
+      id: deployment
+      uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
+      with:
+        path: dist/
+
+  # Deploy job
+  deploy:
+    # Add a dependency to the build job
+    needs: build-and-test
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
