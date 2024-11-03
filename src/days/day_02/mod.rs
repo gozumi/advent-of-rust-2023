@@ -4,5 +4,10 @@ use std::{
 };
 
 pub fn execute_day_02(lines_buffer: Lines<BufReader<File>>) {
-  println!("hello from day 2");
+  for line in lines_buffer {
+    match line {
+      Ok(bar) => println!("{}", bar),
+      Err(why) => panic!("{:?}", why),
+    };
+  }
 }
