@@ -5,18 +5,58 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-
+  build-and-test:
+    name: build & test
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: nightly
+        override: true
+
+    - name: Install cargo-binstall
+      uses: cargo-bins/cargo-binstall@main
+
     - name: Build
       run: cargo build --verbose
-    - name: Run tests
-      run: cargo test --verbose
+    
+    - name: Install Cargo Nextest
+      run: cargo binstall cargo-nextest --secure
+
+    - name: Run the unit tests
+      run: cargo nextest run --profile ci
+
+    - name: Produce test report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()    # run this step even if previous step failed
+      with:
+        name: nextest report
+        path: target/nextest/ci/*.xml
+        reporter: jest-junit  
+
+    # - name: Upload Test Results
+    #   if: always()
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: nextest-results
+    #     path: target/nextest/ci/junit.xml
+        
+    # - name: Upload Test Results
+    #   if: always()
+    #   uses: actions/upload-test-report@v2
+    #   with:
+    #     path: target/nextest/ci/junit.xml
