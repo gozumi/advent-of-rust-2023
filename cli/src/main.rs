@@ -17,7 +17,7 @@ fn main() {
     false => format!("{}", day),
   };
 
-  let file_path = format!("src/days/day_{0}/data.txt", day);
+  let file_path = format!("cli/src/days/day_{0}/data.txt", day);
 
   let lines_buffer = get_file_lines(file_path);
 
