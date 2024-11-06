@@ -37,6 +37,9 @@ jobs:
     - name: Install Cargo Nextest
       run: cargo binstall cargo-nextest --secure
 
+    - name: Install wasm-bindgen-cli
+      run: cargo binstall wasm-bindgen-cli --secure
+
     - name: Run the unit tests
       run: cargo nextest run --profile ci
 
