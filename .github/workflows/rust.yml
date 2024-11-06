@@ -40,6 +40,9 @@ jobs:
     - name: Install wasm-bindgen-cli
       run: cargo binstall wasm-bindgen-cli --secure
 
+    - name: Install wasm32-unknown-unknown
+      run: rustup target add wasm32-unknown-unknown
+
     - name: Run the unit tests
       run: cargo nextest run --profile ci
 
@@ -51,15 +54,38 @@ jobs:
         path: target/nextest/ci/*.xml
         reporter: jest-junit  
 
-    # - name: Upload Test Results
-    #   if: always()
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: nextest-results
-    #     path: target/nextest/ci/junit.xml
-        
-    # - name: Upload Test Results
-    #   if: always()
-    #   uses: actions/upload-test-report@v2
-    #   with:
-    #     path: target/nextest/ci/junit.xml
+    - name: Build the Web app
+      run: |
+        cargo build --release --target wasm32-unknown-unknown
+        wasm-bindgen --target web --out-dir dist target/wasm32-unknown-unknown/release/web-app.wasm
+      
+    - name: Copy index.html to dist
+      run: cp web/index.html dist/
+
+    - name: Upload static files as artifact
+      id: deployment
+      uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
+      with:
+        path: dist/
+
+  # Deploy job
+  deploy:
+    # Add a dependency to the build job
+    needs: build-and-test
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action

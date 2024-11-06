@@ -1,5 +1,5 @@
 [package]
-name = "leptos-tutorial"
+name = "web-app"
 version = "0.1.0"
 edition = "2021"
 
