@@ -130,6 +130,9 @@ dependencies = [
 [[package]]
 name = "cli"
 version = "0.1.0"
+dependencies = [
+ "lib",
+]
 
 [[package]]
 name = "collection_literals"
@@ -778,6 +781,10 @@ dependencies = [
  "thiserror",
  "tracing",
 ]
+
+[[package]]
+name = "lib"
+version = "0.1.0"
 
 [[package]]
 name = "libc"
