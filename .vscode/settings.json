@@ -1,5 +1,11 @@
 {
   "cSpell.words": [
+    "leptos",
     "nextest"
+  ],
+  "rust-analyzer.rustfmt.overrideCommand": [
+    "leptosfmt",
+    "--stdin",
+    "--rustfmt"
   ]
 }
