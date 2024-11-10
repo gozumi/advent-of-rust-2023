@@ -35,15 +35,18 @@ jobs:
     - name: Install Cargo Nextest
       run: cargo binstall cargo-nextest --secure --force
 
-    - name: Install wasm-bindgen-cli
-      run: cargo binstall wasm-bindgen-cli --secure --force
+    - name: Install trunk
+      run: cargo binstall trunk --secure --force
+
+    - name: Install stylance
+      run: cargo binstall stylance-cli --secure --force
 
     - name: Run the unit tests
       run: cargo nextest run --profile ci
 
     - name: Produce test report
       uses: dorny/test-reporter@v1
-      if: success() || failure()    # run this step even if previous step failed
+      if: success() || failure()
       with:
         name: nextest report
         path: target/nextest/ci/*.xml
@@ -51,21 +54,20 @@ jobs:
 
     - name: Build the Web app
       run: |
-        cargo build --release --target wasm32-unknown-unknown
-        wasm-bindgen --target web --out-dir dist target/wasm32-unknown-unknown/release/web-app.wasm
+        rustup show active-toolchain
+        stylance ./web-app --output-dir ./web-app/styles
+        ls -al
+        ls -al web-app
+        cd web-app
+        trunk build --dist ../dist
       
-    - name: Copy index.html to dist
-      run: cp web/index.html dist/
-
     - name: Upload static files as artifact
       id: deployment
-      uses: actions/upload-pages-artifact@v3 # or specific "vX.X.X" version tag for this action
+      uses: actions/upload-pages-artifact@v3
       with:
         path: dist/
 
-  # Deploy job
   deploy:
-    # Add a dependency to the build job
     needs: build-and-test
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
