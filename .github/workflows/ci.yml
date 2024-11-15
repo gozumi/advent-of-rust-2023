@@ -55,11 +55,15 @@ jobs:
     - name: Build the Web app
       run: |
         rustup show active-toolchain
-        stylance ./web-app --output-dir ./web-app/styles
-        ls -al
-        ls -al web-app
         cd web-app
+        stylance . --output-dir ./styles
+        echo "======> Trunk.toml"
+        cat Trunk.toml
+        echo "======> trunk build"
         trunk build
+        echo "======> index.html"
+        cat ./dist/index.html
+        echo "======> directory listing"
         ls -al
       
     - name: Upload static files as artifact
