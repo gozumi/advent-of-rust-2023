@@ -59,15 +59,17 @@ jobs:
         ls -al
         ls -al web-app
         cd web-app
-        trunk build --dist ../dist
+        trunk build
+        ls -al
       
     - name: Upload static files as artifact
       id: deployment
       uses: actions/upload-pages-artifact@v3
       with:
-        path: dist/
+        path: web-app/dist/
 
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: build-and-test
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
