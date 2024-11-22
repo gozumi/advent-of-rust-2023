@@ -56,11 +56,11 @@ jobs:
       run: |
         rustup show active-toolchain
         cd web-app
-        stylance . --output-dir ./styles
+        stylance . --output-dir .
         echo "======> Trunk.toml"
         cat Trunk.toml
         echo "======> trunk build"
-        trunk build
+        trunk build --public-url /advent-of-rust-2023/
         echo "======> index.html"
         cat ./dist/index.html
         echo "======> directory listing"

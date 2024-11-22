@@ -3,4 +3,7 @@ trunk-version = "^0.21.4"
 [build]
 target = "./index.html"
 dist = "dist"
-public_url = "/advent-of-rust-2023/"
+
+[serve]
+#addresses = ["127.0.0.1"]
+port = 8888

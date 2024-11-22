@@ -1,7 +1,9 @@
 {
   "cSpell.words": [
+    "dorny",
     "leptos",
     "nextest",
+    "rustup",
     "stylance"
   ],
   "rust-analyzer.rustfmt.overrideCommand": [
