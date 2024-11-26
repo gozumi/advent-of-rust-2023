@@ -2,7 +2,7 @@ use leptos::*;
 use wasm_bindgen::JsCast;
 
 #[component]
-pub fn DataInput(on_change: Box<dyn Fn(String)>) -> impl IntoView {
+pub fn DataInput(on_change: Box<dyn Fn(Vec<String>)>) -> impl IntoView {
   let (value, setValue) = create_signal(String::new());
 
   let handle_change = move |ev: web_sys::Event| {
@@ -10,14 +10,14 @@ pub fn DataInput(on_change: Box<dyn Fn(String)>) -> impl IntoView {
     {
       let new_value = input.value();
       setValue(new_value.clone());
-      on_change(new_value);
+      on_change(new_value.lines().map(|l| l.trim().to_string()).collect::<Vec<String>>());
     }
   };
 
   view! {
     <textarea
       class="data-input"
-      value=value()
+      value=move || value()
       on:input=handle_change
       placeholder="Enter the data here..."
     />
