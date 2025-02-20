@@ -1,9 +1,11 @@
 FROM docker.io/ubuntu:latest
 
+ARG USERNAME=ubuntu
+
 RUN apt-get update && apt-get install \
-    git -y && \
-    useradd -ms /bin/bash vscode
+    sudo \
+    git -y
 
-USER vscode
+RUN echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-WORKDIR /home/vscode
+USER ${USERNAME}
