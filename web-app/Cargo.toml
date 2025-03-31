@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+lib = { path = "../lib" }
 console_error_panic_hook = "0.1.7"
 leptos = { version = "0.6.15", features = ["csr", "nightly"] }
 stylance = { version = "0.5.2", features = ["nightly"] }
