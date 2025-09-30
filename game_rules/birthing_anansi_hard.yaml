@@ -1,0 +1,17 @@
+name: "Birthing Anansi - Hard Mode"
+version: "1.0"
+description: "Hard difficulty rules for Birthing Anansi game"
+parameters:
+  max_value: 500
+  min_value: 1
+  multiplier: 2
+  rules:
+    - name: "base_score"
+      condition: "default"
+      value: 500
+    - name: "bonus_threshold"
+      condition: "score_above"
+      value: 300
+    - name: "penalty_threshold"
+      condition: "score_below"
+      value: 50

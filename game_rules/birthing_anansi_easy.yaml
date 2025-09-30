@@ -1,0 +1,17 @@
+name: "Birthing Anansi - Easy Mode"
+version: "1.0"
+description: "Easy difficulty rules for Birthing Anansi game"
+parameters:
+  max_value: 2000
+  min_value: 10
+  multiplier: 1
+  rules:
+    - name: "base_score"
+      condition: "default"
+      value: 2000
+    - name: "bonus_threshold"
+      condition: "score_above"
+      value: 1000
+    - name: "penalty_threshold"
+      condition: "score_below"
+      value: 200
