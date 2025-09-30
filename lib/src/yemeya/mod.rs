@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
 
+mod examples;
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GameRules {
     pub name: String,
